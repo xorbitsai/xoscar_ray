@@ -157,7 +157,7 @@ async def kill_and_wait(
             await actor_handle.cleanup.remote()
         except:  # noqa: E722  # nosec  # pylint: disable=bare-except
             pass
-    r = actor_handle.wait.remote(timeout)
+    r = asyncio.ensure_future(actor_handle.wait.remote(timeout))
     ray.kill(actor_handle, no_restart=no_restart)
     ready, _ = await asyncio.wait([r], timeout=timeout)
     if ready:
