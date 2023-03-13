@@ -77,12 +77,18 @@ jobs:
         python-version: ${{ matrix.python-version }}
         activate-environment: ${{ env.CONDA_ENV }}
 
+    - name: Install Xoscar
+      env:
+        MODULE: ${{ matrix.module }}
+      run: |
+        git clone https://github.com/xprobe-inc/xoscar
+        cd xoscar/python && pip install -e "."
+
     - name: Install dependencies
       env:
         MODULE: ${{ matrix.module }}
       run: |
         pip install numpy scipy cython coverage flaky
-        pip install git+https://github.com/xprobe-inc/xoscar.git#subdirectory=python
         pip install -e ".[dev,extra]"
       working-directory: .
 
