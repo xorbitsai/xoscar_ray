@@ -47,7 +47,7 @@ jobs:
       - name: mypy
         run: pip install mypy && mypy xoscar_ray
       - name: codespell
-        run: pip install codespell && cd python && codespell xoscar_ray
+        run: pip install codespell && codespell xoscar_ray
 
   build_test_job:
     runs-on: ${{ matrix.os }}
