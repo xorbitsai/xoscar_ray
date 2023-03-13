@@ -82,7 +82,7 @@ jobs:
         MODULE: ${{ matrix.module }}
       run: |
         pip install numpy scipy cython coverage flaky
-        pip install git+https://github.com/xprobe-inc/xorbits.git
+        pip install git+https://github.com/xprobe-inc/xoscar.git#subdirectory=python
         pip install -e ".[dev,extra]"
       working-directory: .
 
