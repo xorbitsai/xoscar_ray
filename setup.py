@@ -15,7 +15,7 @@
 import os
 import sys
 
-from setuptools import Extension, setup
+from setuptools import setup
 
 
 repo_root = os.path.dirname(os.path.abspath(__file__))
