@@ -1,2 +1,2 @@
 # xoscar_ray
-Xoscar on Ray
+Xoscar on Ray.

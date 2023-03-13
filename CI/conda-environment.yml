@@ -1,0 +1,12 @@
+name: xoscar_ray-test
+channels:
+  - defaults
+dependencies:
+  - pip
+
+  - pip:
+    - pickle5; python_version<"3.8"
+    - shared-memory38>=0.1.1; python_version<"3.8"
+    - uvloop>=0.14.0; sys.platform!="win32"
+    - xoscar
+    - ray
