@@ -15,7 +15,7 @@
 import os
 import sys
 
-from setuptools import Extension, setup
+from setuptools import setup
 
 
 repo_root = os.path.dirname(os.path.abspath(__file__))
@@ -28,7 +28,7 @@ versioneer = __import__("versioneer")
 
 # build long description
 def build_long_description():
-    readme_path = os.path.join(os.path.dirname(os.path.abspath(repo_root)), "README.md")
+    readme_path = os.path.join(repo_root, "README.md")
 
     with open(readme_path, encoding="utf-8") as f:
         return f.read()
