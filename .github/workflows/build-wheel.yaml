@@ -13,63 +13,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build_wheels:
-    name: Build wheels on ${{ matrix.os }} for ${{ matrix.arch }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        arch: [auto]
-        requires-python: [">=3.8,<3.10", ">=3.10,<3.12"]
-        include:
-          - os: ubuntu-latest
-            arch: aarch64
-            requires-python: ">=3.8,<3.9"
-          - os: ubuntu-latest
-            arch: aarch64
-            requires-python: ">=3.9,<3.10"
-          - os: ubuntu-latest
-            arch: aarch64
-            requires-python: ">=3.10,<3.11"
-          - os: ubuntu-latest
-            arch: aarch64
-            requires-python: ">=3.11,<3.12"
-          - os: macos-latest
-            arch: universal2
-            requires-python: ">=3.8,<3.10"
-          - os: macos-latest
-            arch: universal2
-            requires-python: ">=3.10,<3.12"
-
+  build_wheel:
+    name: Build wheel
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Set up QEMU
-        if: ${{ matrix.arch == 'aarch64' }}
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: all
-
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.11.3
-        env:
-          CIBW_ARCHS: ${{ matrix.arch }}
-          CIBW_PROJECT_REQUIRES_PYTHON: ${{ matrix.requires-python }}
-          CIBW_BEFORE_BUILD_MACOS: pip install -r CI/requirements-wheel.txt
-          CIBW_BEFORE_BUILD_WINDOWS: pip install -r CI/requirements-wheel.txt
-          CIBW_TEST_COMMAND: pytest {project}/CI/test_functionality.py
-          CIBW_TEST_REQUIRES: pytest requests
-          CIBW_BUILD_VERBOSITY: 1
-        with:
-          package-dir: .
+      - name: Build wheel
+        run: python setup.py bdist_wheel --python-tag py3
 
       - uses: actions/upload-artifact@v3
         with:
-          path: wheelhouse/*.whl
+          path: ./dist/*.whl
 
   build_sdist:
     name: Build source distribution
@@ -81,14 +39,14 @@ jobs:
           submodules: recursive
 
       - name: Build sdist
-        run: cd python && pipx run build --sdist
+        run: pipx run build --sdist
 
       - uses: actions/upload-artifact@v3
         with:
           path: ./dist/*.tar.gz
 
   upload_pypi:
-    needs: [build_wheels, build_sdist]
+    needs: [build_wheel, build_sdist]
     runs-on: ubuntu-latest
     # upload to PyPI on every tag starting with 'v'
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
